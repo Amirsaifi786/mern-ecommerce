@@ -73,7 +73,7 @@ mern-ecommerce/
 ## 1️⃣ Clone Repository
 
 ```bash
-git clone https://github.com/your-username/mern-ecommerce.git
+git clone https://github.com/Amirsaifi786/mern-ecommerce.git
 cd mern-ecommerce
 ```
 
