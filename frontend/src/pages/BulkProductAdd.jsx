@@ -3,42 +3,74 @@ import axios from "axios";
 
 const BulkProductAdd = () => {
   const [products, setProducts] = useState([
-    { name: "", price: "", image: "", category: "", stock: "" },
+    { name: "", price: "", image: null, category: "", stock: "" },
   ]);
 
+  // Handle Text Change
   const handleChange = (index, e) => {
     const values = [...products];
     values[index][e.target.name] = e.target.value;
     setProducts(values);
   };
 
+  // Handle Image Change
+  const handleImageChange = (index, e) => {
+    const values = [...products];
+    values[index].image = e.target.files[0];
+    setProducts(values);
+  };
+
+  // Add New Row
   const addProductForm = () => {
     setProducts([
       ...products,
-      { name: "", price: "", image: "", category: "", stock: "" },
+      { name: "", price: "", image: null, category: "", stock: "" },
     ]);
   };
 
+  // Remove Row
   const removeProductForm = (index) => {
     const values = [...products];
     values.splice(index, 1);
     setProducts(values);
   };
 
+  // Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const formData = new FormData();
+
+    products.forEach((product, index) => {
+      formData.append(`products[${index}][name]`, product.name);
+      formData.append(`products[${index}][price]`, product.price);
+      formData.append(`products[${index}][category]`, product.category);
+     formData.append(`products[${index}][countInStock]`, product.stock);
+
+      if (product.image) {
+        formData.append(`products[${index}][image]`, product.image);
+      }
+    });
+
     try {
-      await axios.post("/api/products/bulk", { products });
+      await axios.post("http://localhost:5000/api/products/bulk", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
       alert("Products Added Successfully ✅");
-      setProducts([{ name: "", price: "", image: "", category: "", stock: "" }]);
+
+      setProducts([
+        { name: "", price: "", image: null, category: "", stock: "" },
+      ]);
     } catch (error) {
+      console.error(error);
       alert("Error adding products ❌");
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4">
-      <div className="max-w-5xl mx-auto bg-white shadow-2xl rounded-2xl p-8">
+      <div className="max-w-7xl mx-auto bg-white shadow-2xl rounded-2xl p-8">
 
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
@@ -48,103 +80,79 @@ const BulkProductAdd = () => {
           <button
             type="button"
             onClick={addProductForm}
-            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition duration-200"
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
           >
-            + Add More
+            + Add Row
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit}>
+
+          {/* Table Header */}
+          <div className="grid grid-cols-6 gap-4 font-semibold text-gray-600 mb-3">
+            <div>Name</div>
+            <div>Price</div>
+            <div>Category</div>
+            <div>Stock</div>
+            <div>Image</div>
+            <div>Action</div>
+          </div>
+
+          {/* Rows */}
           {products.map((product, index) => (
             <div
               key={index}
-              className="relative border border-gray-200 rounded-xl p-6 bg-gray-50 shadow-sm"
+              className="grid grid-cols-6 gap-4 mb-4 items-center"
             >
-              <h3 className="text-lg font-semibold text-blue-600 mb-4">
-                Product #{index + 1}
-              </h3>
+              <input
+                type="text"
+                name="name"
+                placeholder="Product Name"
+                value={product.name}
+                onChange={(e) => handleChange(index, e)}
+                className="px-3 py-2 border rounded-lg"
+                required
+              />
 
-              <div className="grid md:grid-cols-2 gap-4">
+              <input
+                type="number"
+                name="price"
+                placeholder="Price"
+                value={product.price}
+                onChange={(e) => handleChange(index, e)}
+                className="px-3 py-2 border rounded-lg"
+                required
+              />
 
-                {/* Name */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1">
-                    Product Name
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={product.name}
-                    onChange={(e) => handleChange(index, e)}
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-                    required
-                  />
-                </div>
+              <input
+                type="text"
+                name="category"
+                placeholder="Category"
+                value={product.category}
+                onChange={(e) => handleChange(index, e)}
+                className="px-3 py-2 border rounded-lg"
+              />
 
-                {/* Price */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1">
-                    Price
-                  </label>
-                  <input
-                    type="number"
-                    name="price"
-                    value={product.price}
-                    onChange={(e) => handleChange(index, e)}
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-                    required
-                  />
-                </div>
+              <input
+                type="number"
+                name="stock"
+                placeholder="Stock"
+                value={product.stock}
+                onChange={(e) => handleChange(index, e)}
+                className="px-3 py-2 border rounded-lg"
+              />
 
-                {/* Image */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1">
-                    Image URL
-                  </label>
-                  <input
-                    type="text"
-                    name="image"
-                    value={product.image}
-                    onChange={(e) => handleChange(index, e)}
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-                  />
-                </div>
+              <input
+                type="file"
+                onChange={(e) => handleImageChange(index, e)}
+                className="px-2 py-1 border rounded-lg"
+              />
 
-                {/* Category */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1">
-                    Category
-                  </label>
-                  <input
-                    type="text"
-                    name="category"
-                    value={product.category}
-                    onChange={(e) => handleChange(index, e)}
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-                  />
-                </div>
-
-                {/* Stock */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1">
-                    Stock
-                  </label>
-                  <input
-                    type="number"
-                    name="stock"
-                    value={product.stock}
-                    onChange={(e) => handleChange(index, e)}
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-                  />
-                </div>
-              </div>
-
-              {/* Remove Button */}
               {products.length > 1 && (
                 <button
                   type="button"
                   onClick={() => removeProductForm(index)}
-                  className="absolute top-4 right-4 text-red-500 hover:text-red-700 text-lg"
+                  className="text-red-600 font-bold"
                 >
                   ✖
                 </button>
@@ -153,14 +161,15 @@ const BulkProductAdd = () => {
           ))}
 
           {/* Submit */}
-          <div className="flex justify-end">
+          <div className="flex justify-end mt-6">
             <button
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl shadow-lg transition duration-200"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl"
             >
               Save All Products
             </button>
           </div>
+
         </form>
       </div>
     </div>

@@ -1,12 +1,14 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
-// import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import ProductForm from "./pages/ProductForm";
 import Register from "./pages/Register";
 import BulkProductAdd from "./pages/BulkProductAdd";
 
 function App() {
+   <ToastContainer position="top-right" autoClose={3000} />
   return (
     <BrowserRouter>
       <Routes>

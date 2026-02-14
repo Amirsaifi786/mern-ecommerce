@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const ProductForm = () => {
   const navigate = useNavigate();
@@ -37,9 +38,13 @@ const ProductForm = () => {
           setDescription(data.description);
           setCategory(data.category);
           setCountInStock(data.countInStock);
-          setPreview(`http://localhost:5000/${data.image}`);
+          setPreview(`http://localhost:5000/uploads/${data.image}`);
         } catch (error) {
-          showFeedback("Failed to load product", "error");
+  toast.error(
+      error.response?.data?.error || "Failed to load product ❌"
+    );
+
+          // showFeedback("Failed to load product", "error");
         }
       };
       fetchProduct();
@@ -78,6 +83,10 @@ const ProductForm = () => {
           formData,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
+           toast.success("Product Updated Successfully 🎉");
+
+
+
         showFeedback("Product Updated Successfully!", "success");
       } else {
         await axios.post(
@@ -85,15 +94,21 @@ const ProductForm = () => {
           formData,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
-        showFeedback("Product Created Successfully!", "success");
+        // showFeedback("Product Created Successfully!", "success");
+   toast.success("Product Created Successfully 🎉");
+
+
       }
 
       setTimeout(() => navigate("/"), 1500);
     } catch (error) {
-      showFeedback(
-        error.response?.data?.message || "Something went wrong",
-        "error"
-      );
+      // showFeedback(
+      //   error.response?.data?.message || "Something went wrong",
+      //   "error"
+      // );
+        toast.error(
+      error.response?.data?.error || "Something went wrong ❌"
+    );
     } finally {
       setLoading(false);
     }

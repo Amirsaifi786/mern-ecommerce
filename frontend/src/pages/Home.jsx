@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate ,Link} from "react-router-dom";
 import API from "../services/axiosInstance";
+import styles from "./style";
 
 function Home() {
     const navigate = useNavigate();
@@ -62,7 +63,7 @@ function Home() {
                     >
                         + Add Product
                     </button>
-                    <button className="btn btn-success">
+                    <button className=" bg-emerald-500 placeholder-indigo-50 p-2 rounded-xl" >
                         <Link to="/admin/products/bulk" style={{ color: "white", textDecoration: "none" }}>
                             Bulk Add Products
                         </Link>
@@ -72,7 +73,6 @@ function Home() {
                     </button>
                 </div>
             </header>
-
             {/* Main Content */}
             <main style={styles.container}>
                 <div style={styles.titleRow}>
@@ -97,7 +97,7 @@ function Home() {
                             <div style={{ textAlign: "center" }}>
                                 <img
                                     /* Combine backend URL with the image path from DB */
-                                    src={`http://localhost:5000/${product.image}`} 
+                                    src={`http://localhost:5000/uploads/${product.image}`} 
                                     alt={product.name}
                                     style={{ 
                                         width: "100%", 
@@ -135,148 +135,5 @@ function Home() {
     );
 }
 
-const styles = {
-    pageWrapper: {
-        backgroundColor: "#f8f9fa",
-        minHeight: "100vh",
-        fontFamily: "'Inter', sans-serif",
-    },
-    header: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "1rem 5%",
-        backgroundColor: "#ffffff",
-        boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
-        position: "sticky",
-        top: 0,
-        zIndex: 100,
-    },
-    logo: {
-        fontSize: "1.5rem",
-        fontWeight: "bold",
-        color: "#2563eb",
-        margin: 0,
-    },
-    navButtons: {
-        display: "flex",
-        gap: "10px",
-    },
-    addButton: {
-        padding: "8px 16px",
-        backgroundColor: "#2563eb",
-        color: "white",
-        border: "none",
-        borderRadius: "6px",
-        cursor: "pointer",
-        fontWeight: "500",
-    },
-    logoutButton: {
-        padding: "8px 16px",
-        backgroundColor: "#fef2f2",
-        color: "#dc2626",
-        border: "1px solid #fee2e2",
-        borderRadius: "6px",
-        cursor: "pointer",
-    },
-    container: {
-        padding: "2rem 5%",
-    },
-    titleRow: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "baseline",
-        marginBottom: "20px",
-    },
-    title: {
-        fontSize: "1.8rem",
-        color: "#1e293b",
-        margin: 0,
-    },
-    count: {
-        color: "#64748b",
-        fontSize: "0.9rem",
-    },
-    grid: {
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-        gap: "25px",
-    },
-    card: {
-        backgroundColor: "#fff",
-        borderRadius: "12px",
-        overflow: "hidden",
-        boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)",
-        transition: "transform 0.2s",
-        display: "flex",
-        flexDirection: "column",
-        border: "1px solid #e2e8f0",
-    },
-    categoryBadge: {
-        fontSize: "10px",
-        textTransform: "uppercase",
-        letterSpacing: "1px",
-        padding: "4px 12px",
-        backgroundColor: "#e0e7ff",
-        color: "#4338ca",
-        width: "fit-content",
-        margin: "15px 15px 0",
-        borderRadius: "20px",
-        fontWeight: "bold",
-    },
-    cardBody: {
-        padding: "15px",
-        flexGrow: 1,
-    },
-    productName: {
-        fontSize: "1.1rem",
-        margin: "0 0 8px 0",
-        color: "#0f172a",
-    },
-    description: {
-        fontSize: "0.85rem",
-        color: "#64748b",
-        lineHeight: "1.5",
-        margin: "0 0 15px 0",
-    },
-    priceRow: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-    },
-    price: {
-        fontSize: "1.2rem",
-        fontWeight: "bold",
-        color: "#2563eb",
-    },
-    stock: {
-        fontSize: "0.8rem",
-        color: "#94a3b8",
-    },
-    cardActions: {
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        borderTop: "1px solid #f1f5f9",
-    },
-    editBtn: {
-        padding: "12px",
-        border: "none",
-        background: "none",
-        color: "#0f172a",
-        cursor: "pointer",
-        fontWeight: "600",
-        borderRight: "1px solid #f1f5f9",
-        transition: "background 0.2s",
-    },
-    deleteBtn: {
-        padding: "12px",
-        border: "none",
-        background: "none",
-        color: "#dc2626",
-        cursor: "pointer",
-        fontWeight: "600",
-        transition: "background 0.2s",
-    },
-};
 
 export default Home;

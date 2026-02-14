@@ -10,7 +10,8 @@ const createProduct = async (req, res) => {
       description,
       category,
       countInStock,
-      image: req.file ? req.file.path : "uploads/default.png"
+     image: req.file ? req.file.filename : "default.png"
+
     });
     const createdProduct = await product.save();
     res.status(201).json(createdProduct);
@@ -50,7 +51,7 @@ const updateProduct = async (req, res) => {
       product.description = req.body.description || product.description;
       product.category = req.body.category || product.category;
       product.countInStock = req.body.countInStock || product.countInStock;
-      if (req.file) product.image = req.file.path;
+      if (req.file) product.image = req.file.filename;
 
       const updatedProduct = await product.save();
       res.json(updatedProduct);
@@ -76,6 +77,44 @@ const deleteProduct = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+// BULK CREATE PRODUCTS
+const bulkCreateProducts = async (req, res) => {
+  try {
+    console.log("BODY:", req.body);
+    console.log("FILES:", req.files);
+
+    let products = req.body.products;
+
+    if (!Array.isArray(products)) {
+      products = [products];
+    }
+
+    // Attach images properly
+    req.files.forEach((file) => {
+      const match = file.fieldname.match(/products\[(\d+)\]\[image\]/);
+      if (match) {
+        const index = match[1];
+        if (products[index]) {
+          products[index].image = file.filename; // only filename save
+        }
+      }
+    });
+
+    console.log("FINAL PRODUCTS:", products);
+
+    const inserted = await Product.insertMany(products);
+
+    res.status(201).json({
+      message: "Bulk Products Added Successfully",
+      data: inserted,
+    });
+
+  } catch (error) {
+    console.log("BULK ERROR:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 
 // CHECK THIS PART CAREFULLY
 module.exports = {
@@ -84,4 +123,5 @@ module.exports = {
   getProductById,
   updateProduct,
   deleteProduct,
+  bulkCreateProducts,
 };
