@@ -6,12 +6,14 @@ import "react-toastify/dist/ReactToastify.css";
 import ProductForm from "./pages/ProductForm";
 import Register from "./pages/Register";
 import BulkProductAdd from "./pages/BulkProductAdd";
+import Admin from "./components/Admin";
 
 function App() {
    <ToastContainer position="top-right" autoClose={3000} />
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/admin" element={<Admin />} />
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home />} />
         <Route path="/add-product" element={<ProductForm />} />
